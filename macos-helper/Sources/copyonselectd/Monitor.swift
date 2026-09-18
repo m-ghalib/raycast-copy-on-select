@@ -25,13 +25,6 @@ final class Monitor {
 
   var isRunning: Bool { tap != nil }
 
-  /// Diagnostic: runs the full eligibility, duplicate, and copy path against the frontmost
-  /// application, exactly as a completed selection gesture does.
-  func probe() {
-    let pid = NSWorkspace.shared.frontmostApplication?.processIdentifier
-    work.async { [weak self] in self?.evaluate(.multiClick, pid) }
-  }
-
   static var hasPermissions: Bool {
     AXIsProcessTrusted() && IOHIDCheckAccess(kIOHIDRequestTypeListenEvent) == kIOHIDAccessTypeGranted
   }

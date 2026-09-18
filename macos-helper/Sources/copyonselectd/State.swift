@@ -38,10 +38,6 @@ final class State {
   func handle(_ command: String) -> Reply {
     queue.sync {
       switch command {
-      case "probe":
-        monitor.probe()
-        return Reply(ok: true, enabled: enabled, error: nil, message: nil)
-
       case "status":
         return Reply(ok: true, enabled: enabled, error: nil, message: nil)
 
