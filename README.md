@@ -24,6 +24,14 @@ The product never reads the selected text. It posts a synthetic `Command-C` to t
 active application. The target application produces the clipboard content, exactly as
 it does for a physical key press.
 
+A double-click and a triple-click arrive as a burst of separate clicks. The product waits
+for the end of the burst. One gesture therefore produces one copy.
+
+The product also suppresses a repeat of the selection that it copied last, so repeated
+clicks do not fill the clipboard history. A copy from another source clears that
+suppression. The comparison uses the character range of the selection and the pasteboard
+change counter. It reads no clipboard content and no selected text.
+
 ## Architecture
 
 The product has two parts inside one Raycast extension.

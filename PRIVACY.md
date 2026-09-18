@@ -48,7 +48,7 @@ The log file holds only these fields.
 - Non-content error codes.
 - The binary version.
 
-The log file is bounded by a size limit. Old entries rotate out.
+The log file is bounded at 256 KB. The daemon clears the file when it reaches that size.
 
 ## What the log file must never contain
 
