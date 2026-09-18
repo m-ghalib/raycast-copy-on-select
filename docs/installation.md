@@ -90,10 +90,21 @@ Store.
 
 6. Verify that the script wrote `raycast-extension/assets/copyonselectd` and
    `raycast-extension/assets/copyonselectd.sha256`.
-7. In Raycast, run the command `Import Extension`.
-8. Select the `raycast-extension` directory.
-9. Run `Toggle Copy on Select` one time.
-10. Grant Accessibility and Input Monitoring to the local build.
+7. Build the production Raycast extension:
+
+   ```bash
+   cd raycast-extension
+   npm install
+   npm run build
+   ```
+
+8. In Raycast, run the command `Import Extension`.
+9. Select the `raycast-extension` directory.
+10. Run `Toggle Copy on Select` one time.
+11. Grant Accessibility and Input Monitoring to the local build.
+
+`npm run dev` is only for live development. After the production build is imported,
+the command continues to work when development mode is not running.
 
 A local build produces a different binary. macOS treats a different binary as a
 different program. Therefore the user must grant both permissions again after a local

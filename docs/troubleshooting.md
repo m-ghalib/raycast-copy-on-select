@@ -60,7 +60,9 @@ The extension did not find the bundled binary, or the checksum did not match.
    `./scripts/build.sh` again.
 7. Verify that `raycast-extension/assets/copyonselectd` exists.
 8. Verify that `raycast-extension/assets/copyonselectd.sha256` exists.
-9. Import the extension again in Raycast.
+9. Run `cd raycast-extension && npm run build` to refresh the production build.
+10. Import the extension again in Raycast. Development mode does not need to remain
+    running.
 
 ## The toggle reports Setup Required
 

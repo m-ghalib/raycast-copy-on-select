@@ -120,8 +120,19 @@ For the full statement, read [PRIVACY.md](PRIVACY.md).
 
 5. Verify that `scripts/build.sh` wrote `raycast-extension/assets/copyonselectd` and
    `raycast-extension/assets/copyonselectd.sha256`.
-6. In Raycast, run `Import Extension` and select the `raycast-extension` directory.
-7. Grant Accessibility and Input Monitoring to the local build.
+6. Build the production Raycast extension:
+
+   ```bash
+   cd raycast-extension
+   npm install
+   npm run build
+   ```
+
+7. In Raycast, run `Import Extension` and select the `raycast-extension` directory.
+8. Grant Accessibility and Input Monitoring to the local build.
+
+`npm run dev` is only for live development. After the production build is imported,
+the command continues to work when development mode is not running.
 
 ## Known limits
 
