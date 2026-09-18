@@ -1,0 +1,28 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  helper:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift build --package-path macos-helper
+      - run: swift test --package-path macos-helper
+
+  extension:
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: raycast-extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
