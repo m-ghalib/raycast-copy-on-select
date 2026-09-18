@@ -90,3 +90,45 @@ final class SelectionTests: XCTestCase {
     XCTAssertFalse(sel(1, 0, 5, 11).repeats(sel(1, 0, 5, 10)))
   }
 }
+
+/// Replays the event sequences that macOS delivers for real clicks, to establish exactly
+/// how many copy candidates one physical gesture produces.
+final class RealSequenceTests: XCTestCase {
+  private func candidates(_ inputs: [Gesture.Input]) -> [Gesture.Candidate] {
+    var g = Gesture()
+    return inputs.compactMap { g.handle($0) }
+  }
+
+  func testCleanDoubleClickProducesOneCandidate() {
+    XCTAssertEqual(candidates([
+      .down(x: 100, y: 100, clickCount: 1), .up(x: 100, y: 100, clickCount: 1),
+      .down(x: 100, y: 100, clickCount: 2), .up(x: 100, y: 100, clickCount: 2),
+    ]), [.multiClick])
+  }
+
+  func testTripleClickProducesTwoCandidatesWhichTheMonitorMustCoalesce() {
+    // The second and third click each qualify. Coalescing in Monitor collapses them.
+    XCTAssertEqual(candidates([
+      .down(x: 100, y: 100, clickCount: 1), .up(x: 100, y: 100, clickCount: 1),
+      .down(x: 100, y: 100, clickCount: 2), .up(x: 100, y: 100, clickCount: 2),
+      .down(x: 100, y: 100, clickCount: 3), .up(x: 100, y: 100, clickCount: 3),
+    ]), [.multiClick, .multiClick])
+  }
+
+  func testDoubleClickWithJitterProducesTwoCandidates() {
+    // Sub-threshold jitter on the first click is ignored, but a drag past the threshold
+    // on either click qualifies on its own.
+    XCTAssertEqual(candidates([
+      .down(x: 100, y: 100, clickCount: 1), .dragged(x: 120, y: 100),
+      .up(x: 120, y: 100, clickCount: 1),
+      .down(x: 120, y: 100, clickCount: 2), .up(x: 120, y: 100, clickCount: 2),
+    ]), [.drag, .multiClick])
+  }
+
+  func testRepeatedSingleClicksProduceNoCandidates() {
+    XCTAssertEqual(candidates([
+      .down(x: 100, y: 100, clickCount: 1), .up(x: 100, y: 100, clickCount: 1),
+      .down(x: 100, y: 100, clickCount: 1), .up(x: 100, y: 100, clickCount: 1),
+    ]), [])
+  }
+}

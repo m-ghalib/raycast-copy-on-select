@@ -6,8 +6,6 @@ import IOKit.hid
 
 /// Owns the event tap, the gesture classifier, and the synthetic copy.
 final class Monitor {
-  /// Time allowed for the target application to commit its selection before the check.
-  private static let settleDelay = 0.06
   /// A later click in the same burst supersedes an earlier one. macOS defines the interval.
   private static let multiClickWindow = max(NSEvent.doubleClickInterval, 0.3)
   /// Time for the target application to place the copy on the pasteboard.
@@ -100,8 +98,10 @@ final class Monitor {
     // selection, so one user gesture produces exactly one copy.
     generation &+= 1
     let mine = generation
-    let delay = candidate == .multiClick ? Self.multiClickWindow : Self.settleDelay
-    work.asyncAfter(deadline: .now() + delay) { [weak self] in
+    // Every candidate waits out the multi-click window, including a drag. A small hand
+    // movement during a double-click produces a drag candidate first, and a shorter delay
+    // for it would copy the wobble before the word selection arrived.
+    work.asyncAfter(deadline: .now() + Self.multiClickWindow) { [weak self] in
       guard let self, self.generation == mine else { return }
       self.evaluate(candidate, pid)
     }
